@@ -1,0 +1,6 @@
+{
+  "name": "omni-screenmesh",
+  "description": "OmniScreenMesh digital signage and multi-screen synchronization application.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
