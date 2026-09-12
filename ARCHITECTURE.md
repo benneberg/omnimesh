@@ -88,7 +88,7 @@ The application unifies an **Express 4 reverse-proxy server** and a **Hono micro
 The system is designed around the **Cloudflare Durable Objects actor model**:
 - **Entity (`worker/core-utils.ts`)**: Abstract base class representing a stateful actor. Implements Compare-And-Swap (`casPut`) versioning to eliminate race conditions without distributed locks.
 - **IndexedEntity (`worker/core-utils.ts`)**: Extends `Entity` to provide prefix-based indexing (`Index<T>`) for collections. Guarantees $O(1)$ identity lookups and cursor-driven paging over sorted keys.
-- **In-Memory Storage Adapter (`GlobalDurableObject`)**: In local development and Node.js container environments (such as Google AI Studio Build), Cloudflare's native `DurableObject` runtime is substituted with an in-memory transactional storage engine. Each entity instance is assigned an isolated Map partition with transaction semantics (`casPut`, `del`, `listPrefix`, `indexAddBatch`).
+- **Durable Storage Engine (`worker/durable-storage.ts` & `GlobalDurableObject`)**: Cloudflare's native `DurableObject` actor runtime is implemented in Node.js container environments via an atomic, file-backed durable storage engine (`/data/omnisign-storage.json`). Each entity instance operates on an isolated transactional partition supporting atomic CAS operations (`casPut`, `del`, `listPrefix`, `indexAddBatch`). Mutations are cached in memory for sub-millisecond read/write latency and debounced to disk atomically via temporary file swaps, guaranteeing state persistence across process restarts without external database dependencies.
 
 ### 3.3 Cryptographic Trust Framework
 

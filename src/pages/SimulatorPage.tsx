@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/api-client';
+import { api, saveAuth } from '@/lib/api-client';
 import { generateDeviceKeypair, exportKey, signData } from '@/lib/crypto-utils';
 import { NativeBridge } from '@/lib/native-bridge';
 import { detectAnomalies } from '@/lib/anomaly-engine';
@@ -59,6 +59,7 @@ export function SimulatorPage() {
           const dev = await api<Device>(`/v1/devices/${id}`).catch(() => null);
           if (dev && dev.status === 'active') {
             setDeviceState(dev);
+            if (dev.accessToken) saveAuth(id, dev.accessToken);
           } else {
             const init = await api<DeviceInitResponse>(`/v1/devices/init`, {
               method: 'POST',
@@ -83,6 +84,7 @@ export function SimulatorPage() {
         const dev = await api<Device>(`/v1/devices/${id}`);
         if (dev.status === 'active') {
           setDeviceState(dev);
+          if (dev.accessToken) saveAuth(id, dev.accessToken);
           toast.success("Identity Verified", { description: "Node activated by Control Plane" });
         }
       } catch (e) {

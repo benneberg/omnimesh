@@ -30,6 +30,9 @@ OmniScreenMesh is built as a full-stack TypeScript application combining modern 
 | **Drag & Drop / Visualization** | `@dnd-kit/core`, `@dnd-kit/sortable`, Recharts time-series telemetry charts |
 | **Backend & Ingress Gateway** | Node.js, Express 4 gateway (Port 3000), Vite development middleware |
 | **API Router & Entities** | Hono micro-framework, Durable Object state engine model with atomic CAS updates |
+| **Persistence Engine** | Atomic file-backed partition storage (`worker/durable-storage.ts`) with disk debouncing |
+| **Cryptography** | Isomorphic Web Crypto API (SubtleCrypto) Ed25519 signatures & SHA-256 integrity |
+| **Testing & CI** | Vitest (25 unit/integration tests), GitHub Actions automated matrix CI workflow |
 | **Bundler & Build Tooling** | Vite 6, esbuild, TypeScript |
 
 > For a deep dive into entity data structures, cryptographic handshakes, and recovery state machines, see [ARCHITECTURE.md](./ARCHITECTURE.md).
@@ -83,6 +86,23 @@ To start the production server:
 npm start
 ```
 
+### Testing & Verification
+
+OmniScreenMesh includes an automated test suite powered by **Vitest**:
+
+```bash
+# Run full automated test suite (25 tests across 4 suites)
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Static type check
+npm run lint
+```
+
+A continuous integration pipeline (`.github/workflows/ci.yml`) automatically executes static type analysis, the automated test suite, and bundle verification on every push and pull request across Node.js 20.x and 22.x runtimes.
+
 ---
 
 ## Primary Application Views
@@ -129,8 +149,10 @@ All endpoints are served under the `/api/v1` namespace:
 ## Security & Verification Guarantees
 
 1. **Zero-Trust Content Integrity**: Every media item declared in a playlist requires a pre-computed SHA-256 hash. The edge player validates this hash before executing render commands, preventing asset tampering and CDN spoofing.
-2. **Deterministic Concurrency**: All entity writes use Compare-And-Swap (`casPut`) version verification, ensuring atomic updates even under concurrent device check-ins.
-3. **Graceful Degradation**: If an edge display loses connectivity to the control plane, it transitions smoothly to `cache_fallback` mode, continuously rendering verified local media and queuing PoP records for transmission upon reconnection.
+2. **Authentic Ed25519 Cryptography**: All manifest publications and device challenge-response handshakes utilize non-repudiable Ed25519 digital signatures computed via the standard Web Crypto API (`crypto.subtle`), ensuring full mathematical verification without external cryptographic bloat.
+3. **Strict Bearer Authorization**: Edge node operations (telemetry ingestion, heartbeats, proof-of-play recording, and manifest synchronization) require cryptographic `Authorization: Bearer <token>` credentials issued exclusively upon verified cryptographic enrollment.
+4. **Deterministic Concurrency & Durability**: All entity writes use Compare-And-Swap (`casPut`) optimistic concurrency control backed by durable atomic storage (`worker/durable-storage.ts`), ensuring zero state loss across server reboots.
+5. **Graceful Degradation**: If an edge display loses connectivity to the control plane, it transitions smoothly to `cache_fallback` mode, continuously rendering verified local media and queuing PoP records for transmission upon reconnection.
 
 ---
 

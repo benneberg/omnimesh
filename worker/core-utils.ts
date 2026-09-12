@@ -5,6 +5,7 @@
  */
 import type { ApiResponse } from "@shared/types";
 import type { Context } from "hono";
+import { durableStorage } from "./durable-storage";
 
 export interface Env {
   GlobalDurableObject: {
@@ -16,11 +17,19 @@ export interface Env {
 type Doc<T> = { v: number; data: T };
 
 export class GlobalDurableObject {
-  private data = new Map<string, unknown>();
+  private id: string;
+  private data: Map<string, unknown>;
+
+  constructor(id: string = "default") {
+    this.id = id;
+    const initial = durableStorage.getPartition(this.id);
+    this.data = new Map(Object.entries(initial));
+  }
 
   async del(key: string): Promise<boolean> {
     const existed = this.data.has(key);
     this.data.delete(key);
+    durableStorage.deletePartitionValue(this.id, key);
     return existed;
   }
 
@@ -38,7 +47,9 @@ export class GlobalDurableObject {
     const curV = cur?.v ?? 0;
     if (curV !== expectedV) return { ok: false, v: curV };
     const nextV = curV + 1;
-    this.data.set(key, { v: nextV, data });
+    const doc: Doc<T> = { v: nextV, data };
+    this.data.set(key, doc);
+    durableStorage.setPartitionValue(this.id, key, doc);
     return { ok: true, v: nextV };
   }
 
@@ -57,7 +68,9 @@ export class GlobalDurableObject {
 
   async indexAddBatch<T>(items: T[]): Promise<void> {
     for (const it of items) {
-      this.data.set('i:' + String(it), 1);
+      const k = 'i:' + String(it);
+      this.data.set(k, 1);
+      durableStorage.setPartitionValue(this.id, k, 1);
     }
   }
 
@@ -67,6 +80,7 @@ export class GlobalDurableObject {
       const k = 'i:' + String(it);
       if (this.data.has(k)) {
         this.data.delete(k);
+        durableStorage.deletePartitionValue(this.id, k);
         removed++;
       }
     }
@@ -75,6 +89,7 @@ export class GlobalDurableObject {
 
   async indexDrop(_rootKey: string): Promise<void> {
     this.data.clear();
+    durableStorage.clearPartition(this.id);
   }
 }
 
@@ -86,7 +101,7 @@ export const defaultEnv: Env = {
     get: (id: string) => {
       let inst = instances.get(id);
       if (!inst) {
-        inst = new GlobalDurableObject();
+        inst = new GlobalDurableObject(id);
         instances.set(id, inst);
       }
       return inst;

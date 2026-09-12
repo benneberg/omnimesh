@@ -1,5 +1,6 @@
 import type { Device, Playlist } from './types';
-export const ROOT_PUB_KEY = "1XasgGChtKrXm/TziWQncqDufLPi8qry8ASgfdwdR==";
+export const ROOT_PUB_KEY = "MCowBQYDK2VwAyEAcXSF9vY8G2xHwAOv2dlNw1sW5Toa4BvGSW1gAefSFZQ=";
+export const ROOT_PRIV_KEY = "MC4CAQAwBQYDK2VwBCIEIILz1v8vRpKwFVbBKnKBVeCb9RaUEQNOl8X9+cCqrr23";
 export const MOCK_PLAYLISTS: Playlist[] = [
   {
     id: 'p-1',
@@ -42,6 +43,7 @@ export const MOCK_DEVICES: Device[] = [
     lastHeartbeatAt: now - 30000,
     pairingExpiresAt: 0,
     assignedPlaylistId: 'p-1',
+    accessToken: 'at_mesh_dev001_mock_session',
     popLogs: [],
     p2pSharingEnabled: true,
     p2pMetrics: {

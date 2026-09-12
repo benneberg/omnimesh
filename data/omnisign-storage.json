@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "lastUpdated": 1789253556810,
+  "partitions": {
+    "persist-test-session": {
+      "session_state": {
+        "v": 1,
+        "data": {
+          "active": true,
+          "nodes": 42
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import { Entity, IndexedEntity, Index } from "./core-utils";
 import type { Device, Playlist, DeviceHeartbeat, Manifest, AuditLog, PoPLog, ContentPeer, DeviceInitResponse } from "@shared/types";
-import { MOCK_DEVICES, MOCK_PLAYLISTS, ROOT_PUB_KEY } from "@shared/mock-data";
+import { MOCK_DEVICES, MOCK_PLAYLISTS, ROOT_PUB_KEY, ROOT_PRIV_KEY } from "@shared/mock-data";
+import { importKey, signData, verifyChallengeSignature, generateSecureToken } from "@shared/crypto-utils";
 export interface MetricsState {
   total_heartbeats: number;
   successful_pairings: number;
@@ -97,9 +98,25 @@ export class DeviceEntity extends IndexedEntity<Device> {
   }
   async verifyPairing(code: string, signature?: string): Promise<boolean> {
     const state = await this.getState();
-    if (state.pairingCode !== code) return false;
+    if (!state.pairingCode || state.pairingCode !== code) return false;
+    if (state.pairingExpiresAt && Date.now() > state.pairingExpiresAt) return false;
+
+    // Cryptographic signature verification if signature is provided
+    if (signature && state.challenge && state.publicKey) {
+      const isValidSig = await verifyChallengeSignature(state.publicKey, state.challenge, signature);
+      if (!isValidSig) {
+        console.warn(`[SECURITY] Cryptographic handshake verification failed for device ${this.id}`);
+        return false;
+      }
+    }
+
+    const token = generateSecureToken("at_mesh");
     await this.mutate(s => ({
-      ...s, status: 'active', pairingCode: undefined, accessToken: `at_${crypto.randomUUID()}`
+      ...s,
+      status: 'active',
+      pairingCode: undefined,
+      challenge: undefined,
+      accessToken: token
     }));
     return true;
   }
@@ -130,6 +147,28 @@ export class PlaylistEntity extends IndexedEntity<Playlist> {
   }
   async getSignedManifest(): Promise<Manifest> {
     const playlist = await this.getState();
-    return { playlist, signature: `sig_${crypto.randomUUID()}`, signerPublicKey: ROOT_PUB_KEY, etag: `W/"${playlist.version}"`, issuedAt: Date.now() };
+    const canonicalPayload = JSON.stringify({
+      id: playlist.id,
+      version: playlist.version,
+      updatedAt: playlist.updatedAt,
+      items: playlist.items
+    });
+
+    let signature: string;
+    try {
+      const privKey = await importKey(ROOT_PRIV_KEY, "private");
+      signature = await signData(privKey, canonicalPayload);
+    } catch (err) {
+      console.error("[CRYPTO] Error generating manifest Ed25519 signature:", err);
+      signature = `sig_${crypto.randomUUID()}`;
+    }
+
+    return {
+      playlist,
+      signature,
+      signerPublicKey: ROOT_PUB_KEY,
+      etag: `W/"${playlist.version}"`,
+      issuedAt: Date.now()
+    };
   }
 }
