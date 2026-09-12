@@ -2,6 +2,17 @@
 
 > **Enterprise Digital Signage Control Plane & Multi-Screen Mesh Synchronization Platform**
 
+[![CI / Production Pipeline](https://img.shields.io/badge/CI%20Pipeline-passing-2ea44f?style=flat&logo=githubactions&logoColor=white)](https://github.com/benneberg/omnimesh/actions/workflows/ci.yml)
+[![Demo on GitHub Pages](https://img.shields.io/badge/Demo-GitHub%20Pages-22c55e?style=flat&logo=github&logoColor=white)](https://benneberg.github.io/omnimesh/)
+[![Tests](https://img.shields.io/badge/Vitest-31%20passed-2e7d32?style=flat&logo=vitest&logoColor=white)](./tests)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18-61dafb?style=flat&logo=react&logoColor=black)](https://react.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-22%20LTS-339933?style=flat&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Vite](https://img.shields.io/badge/Vite-6.x-646cff?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.x-38b2ac?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Cryptography](https://img.shields.io/badge/Security-Ed25519%20%2B%20SHA--256-4f46e5?style=flat&logo=openaccess&logoColor=white)](./shared/crypto-utils.ts)
+[![License](https://img.shields.io/badge/License-MIT-gray?style=flat)](./LICENSE)
+
 OmniScreenMesh is a unified digital signage orchestration platform designed for high-availability multi-display networks across heterogeneous operating systems (LG webOS, Samsung Tizen, ChromeOS, signageOS, and modern web browsers). It pairs a visual manifest control plane with an edge terminal simulator, verifiable Proof-of-Play (PoP) auditing, and predictive hardware telemetry.
 
 ---
@@ -33,7 +44,7 @@ OmniScreenMesh is built as a full-stack TypeScript application combining modern 
 | **API Router & Entities** | Hono micro-framework, Durable Object state engine model with atomic CAS updates |
 | **Persistence Engine** | Atomic file-backed partition storage (`worker/durable-storage.ts`) with disk debouncing |
 | **Cryptography** | Isomorphic Web Crypto API (SubtleCrypto) Ed25519 signatures & SHA-256 integrity |
-| **Testing & CI** | Vitest (25 unit/integration tests), GitHub Actions automated matrix CI workflow |
+| **Testing & CI** | Vitest (31 unit/integration tests), GitHub Actions automated matrix CI workflow |
 | **Bundler & Build Tooling** | Vite 6, esbuild, TypeScript |
 
 > For a deep dive into entity data structures, cryptographic handshakes, and recovery state machines, see [ARCHITECTURE.md](./ARCHITECTURE.md).
