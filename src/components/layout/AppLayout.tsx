@@ -6,6 +6,8 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-sidebar";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/lib/auth-store";
+import { isDemoMode } from "@/lib/api-client";
+import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type AppLayoutProps = {
@@ -17,6 +19,7 @@ type AppLayoutProps = {
 
 export function AppLayout({ children, container = false, className, contentClassName }: AppLayoutProps): JSX.Element {
   const user = useAuthStore(s => s.user);
+  const demoActive = isDemoMode();
 
   return (
     <SidebarProvider defaultOpen={false}>
@@ -35,6 +38,12 @@ export function AppLayout({ children, container = false, className, contentClass
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            {demoActive && (
+              <Badge variant="secondary" className="text-[9px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1">
+                <Sparkles className="size-2.5" />
+                <span className="hidden xs:inline">Interactive</span> Demo
+              </Badge>
+            )}
             <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest border-indigo-500/30 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30">
               {user?.role ? user.role.split('_')[0] : 'NODE'}
             </Badge>

@@ -3,6 +3,9 @@ import path from 'path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  base: process.env.GITHUB_PAGES === 'true'
+    ? (process.env.VITE_BASE_PATH || './')
+    : '/',
   plugins: [react()],
   resolve: {
     alias: {
@@ -16,3 +19,4 @@ export default defineConfig({
     watch: process.env.DISABLE_HMR === 'true' ? null : {},
   },
 });
+

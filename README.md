@@ -157,6 +157,23 @@ All endpoints are served under the `/api/v1` namespace:
 
 ---
 
+## GitHub Pages & Standalone Demo Deployment
+
+OmniScreenMesh includes a client-side execution engine that enables hosting the application as a **100% serverless, zero-maintenance interactive demo on GitHub Pages**.
+
+### Architecture
+- **In-Browser Sandbox**: When deployed to `*.github.io` or when disconnected from the live backend, `src/lib/demo-api.ts` transparently intercepts API requests and executes them using the browser's native **Web Crypto API** (for Ed25519 signatures and SHA-256 integrity digests) and `localStorage` for state persistence.
+- **Client SPA Routing**: Includes `public/404.html` and history redirect scripts so deep links (e.g. `/fleet`, `/simulator/dev-001`) resolve properly on hard page reloads.
+- **Automated CI/CD**: A GitHub Actions workflow (`.github/workflows/deploy-pages.yml`) runs linting, the 31-test Vitest suite, and publishes the static bundle.
+
+### Enabling GitHub Pages for Your Repository
+1. Push your repository to GitHub.
+2. In your GitHub repository, navigate to **Settings** &rarr; **Pages**.
+3. Under **Build and deployment** &rarr; **Source**, select **GitHub Actions**.
+4. Push a commit to `main` (or click **Run workflow** in the **Actions** tab) — your demo will be live at `https://<username>.github.io/<repo-name>/`.
+
+---
+
 ## License
 
 This project is licensed under the MIT License.
