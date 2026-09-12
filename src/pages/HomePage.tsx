@@ -56,40 +56,40 @@ export function HomePage() {
   return (
     <AppLayout container contentClassName="relative min-h-screen">
       <div className="absolute inset-0 bg-[radial-gradient(#4338ca_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.04] pointer-events-none" />
-      <div className="space-y-10 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b pb-10">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-black text-xs uppercase tracking-[0.3em] mb-2">
-              <Zap className="h-4 w-4 animate-pulse" /> Enterprise Command Center
+      <div className="space-y-6 sm:space-y-10 relative z-10">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 sm:gap-6 border-b pb-6 sm:pb-10">
+          <div className="space-y-1 sm:space-y-2 min-w-0">
+            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-1 sm:mb-2">
+              <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-pulse shrink-0" /> Enterprise Command Center
             </div>
-            <h1 className="text-7xl font-black tracking-tighter leading-none bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-tight sm:leading-none bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 bg-clip-text text-transparent truncate">
               {user?.name.split(' ')[0]} Fleet
             </h1>
           </div>
-          <div className="flex gap-3">
-             <Badge className="bg-indigo-600 text-white border-none px-5 py-2.5 rounded-2xl text-[10px] font-black tracking-widest uppercase shadow-glow">
+          <div className="flex gap-2 sm:gap-3 shrink-0">
+             <Badge className="bg-indigo-600 text-white border-none px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black tracking-wider sm:tracking-widest uppercase shadow-glow">
                ORCHESTRATION: NOMINAL
              </Badge>
           </div>
         </div>
-        <div className="grid gap-6 md:grid-cols-4">
+        <div className="grid gap-3 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard title="Active Nodes" value={activeCount} icon={CheckCircle2} color="emerald" />
           <StatCard title="Anomalies Detected" value={anomalies.length} icon={BrainCircuit} color="amber" sub="Predictive Engine Active" />
           <StatCard title="Watchdog Recovery" value={watchdogAlerts} icon={ShieldAlert} color="rose" />
           <StatCard title="Fleet Integrity" value={`${fleetHealth}%`} icon={Shield} color="indigo" />
         </div>
-        <div className="grid gap-8 lg:grid-cols-12 items-start">
-          <Card className="lg:col-span-8 shadow-soft border-0 ring-1 ring-slate-200/50 dark:ring-white/10 overflow-hidden bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm min-h-[500px]">
-            <CardHeader className="border-b px-8 py-5 flex flex-row items-center justify-between">
+        <div className="grid gap-6 sm:gap-8 lg:grid-cols-12 items-start">
+          <Card className="lg:col-span-8 shadow-soft border-0 ring-1 ring-slate-200/50 dark:ring-white/10 overflow-hidden bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm min-h-0 sm:min-h-[480px]">
+            <CardHeader className="border-b px-4 sm:px-8 py-3.5 sm:py-5 flex flex-row items-center justify-between">
               <div className="flex items-center gap-2">
-                <Activity className="h-4 w-4 text-indigo-500" />
+                <Activity className="h-4 w-4 text-indigo-500 shrink-0" />
                 <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em]">Global Telemetry Stream</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="h-[400px] pt-10 px-8">
+            <CardContent className="h-[240px] sm:h-[380px] pt-4 sm:pt-8 px-2 sm:px-6">
               {isLoading ? <div className="center h-full"><Loader2 className="animate-spin text-indigo-500" /></div> : (
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={fleetMetrics}>
+                  <AreaChart data={fleetMetrics} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorCpu" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#4338CA" stopOpacity={0.15}/><stop offset="95%" stopColor="#4338CA" stopOpacity={0}/></linearGradient>
                     </defs>
@@ -103,15 +103,15 @@ export function HomePage() {
               )}
             </CardContent>
           </Card>
-          <div className="lg:col-span-4 space-y-6">
+          <div className="lg:col-span-4 space-y-4 sm:space-y-6">
             <Card className="shadow-soft border-0 ring-1 ring-slate-200/50 dark:ring-white/10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
-              <CardHeader className="border-b px-6 py-4">
+              <CardHeader className="border-b px-4 sm:px-6 py-3.5 sm:py-4">
                 <div className="flex items-center gap-2">
-                  <BrainCircuit className="h-4 w-4 text-amber-500" />
+                  <BrainCircuit className="h-4 w-4 text-amber-500 shrink-0" />
                   <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em]">Predictive Maintenance</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="p-0 max-h-[350px] overflow-y-auto">
+              <CardContent className="p-0 max-h-[300px] sm:max-h-[350px] overflow-y-auto">
                 {anomalies.length === 0 ? (
                   <div className="p-10 text-center space-y-2 opacity-50">
                     <CheckCircle2 className="size-8 mx-auto text-emerald-500" />
@@ -143,13 +143,13 @@ function StatCard({ title, value, icon: Icon, color, sub }: any) {
   return (
     <Card className="group relative overflow-hidden border-0 shadow-soft ring-1 ring-slate-200/50 dark:ring-white/10 backdrop-blur-xl bg-white/40 dark:bg-slate-900/40">
       <div className={`absolute left-0 top-0 bottom-0 w-1 ${color === 'emerald' ? 'bg-emerald-500' : color === 'rose' ? 'bg-rose-500' : color === 'amber' ? 'bg-amber-500' : 'bg-indigo-500'}`} />
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+      <CardHeader className="flex flex-row items-center justify-between pb-1 sm:pb-2 px-4 sm:px-6 pt-4 sm:pt-6">
         <CardTitle className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">{title}</CardTitle>
-        <Icon className={`h-4 w-4 ${color === 'emerald' ? 'text-emerald-500' : 'text-indigo-500'} opacity-50`} />
+        <Icon className={`h-4 w-4 ${color === 'emerald' ? 'text-emerald-500' : 'text-indigo-500'} opacity-50 shrink-0`} />
       </CardHeader>
-      <CardContent>
-        <div className="text-4xl font-black tabular-nums tracking-tighter">{value}</div>
-        <p className="text-[10px] text-muted-foreground mt-2 font-bold uppercase tracking-tight">{sub || "Verified Identity"}</p>
+      <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+        <div className="text-2xl sm:text-4xl font-black tabular-nums tracking-tighter">{value}</div>
+        <p className="text-[9px] sm:text-[10px] text-muted-foreground mt-1 sm:mt-2 font-bold uppercase tracking-tight truncate">{sub || "Verified Identity"}</p>
       </CardContent>
     </Card>
   );

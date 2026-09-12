@@ -15,6 +15,7 @@ OmniScreenMesh is a unified digital signage orchestration platform designed for 
 - **Simulated Hardware Edge Terminal**: Built-in interactive screen player simulator supporting portrait/landscape orientations, resolution scaling (1080p, 4K), simulated network drops, offline playback from cache, and watchdog crash recovery.
 - **Zero-Touch Provisioning & Pairing**: Challenge-response handshake protocol generating short-lived 6-digit pairing codes and hardware challenge nonces.
 - **Enterprise Security & SSO**: Configurable Single Sign-On (SAML 2.0 / OIDC) enforcement, sliding-window rate limiting, and immutable audit logs.
+- **Mobile-First Responsive Design**: Adaptive layout engine optimized for portrait mobile screens up to ultra-wide operations monitors with zero horizontal overflow, adaptive cards, and collapsible touch drawers.
 - **Integrated API Documentation**: Live, interactive OpenAPI-style documentation with copyable cURL commands and response schemas.
 
 ---

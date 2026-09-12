@@ -43,18 +43,18 @@ function SortableItem({ item, onRemove, onChange }: { item: PlaylistItem, onRemo
     }
   };
   return (
-    <div ref={setNodeRef} style={style} className="flex flex-col bg-card border rounded-xl p-5 mb-4 group shadow-sm hover:shadow-md transition-shadow relative">
-      <div className="flex items-center gap-4 mb-4">
-        <div {...attributes} {...listeners} className="cursor-grab text-muted-foreground hover:text-foreground touch-none"><GripVertical className="h-5 w-5" /></div>
-        <div className="h-12 w-20 bg-muted rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border-2 border-dashed font-bold text-[10px] text-muted-foreground uppercase">
+    <div ref={setNodeRef} style={style} className="flex flex-col bg-card border rounded-xl p-3.5 sm:p-5 mb-4 group shadow-sm hover:shadow-md transition-shadow relative">
+      <div className="flex items-center gap-2 sm:gap-4 mb-3">
+        <div {...attributes} {...listeners} className="cursor-grab text-muted-foreground hover:text-foreground touch-none p-1 shrink-0"><GripVertical className="h-5 w-5" /></div>
+        <div className="h-10 w-14 sm:h-12 sm:w-20 bg-muted rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border-2 border-dashed font-bold text-[9px] sm:text-[10px] text-muted-foreground uppercase">
           {item.type}
         </div>
-        <div className="flex-grow">
-          <Input placeholder="Asset Source URL" value={item.url} onChange={(e) => onChange({ url: e.target.value })} className="h-9" />
+        <div className="flex-grow min-w-0">
+          <Input placeholder="Asset Source URL" value={item.url} onChange={(e) => onChange({ url: e.target.value })} className="h-9 text-xs" />
         </div>
-        <Button variant="ghost" size="icon" onClick={onRemove} className="text-rose-500 hover:bg-rose-50"><Trash2 className="h-4 w-4" /></Button>
+        <Button variant="ghost" size="icon" onClick={onRemove} className="text-rose-500 hover:bg-rose-50 shrink-0 h-9 w-9"><Trash2 className="h-4 w-4" /></Button>
       </div>
-      <div className="grid grid-cols-4 gap-4 items-end">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 items-end">
         <div>
           <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-tighter">Content Type</Label>
           <Select value={item.type} onValueChange={(v) => onChange({ type: v as any })}>
@@ -69,14 +69,14 @@ function SortableItem({ item, onRemove, onChange }: { item: PlaylistItem, onRemo
         </div>
         <div>
           <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-tighter">Duration (ms)</Label>
-          <Input type="number" value={item.durationMs} onChange={(e) => onChange({ durationMs: parseInt(e.target.value) || 0 })} className="h-9" />
+          <Input type="number" value={item.durationMs} onChange={(e) => onChange({ durationMs: parseInt(e.target.value) || 0 })} className="h-9 text-xs" />
         </div>
-        <div className="col-span-2">
+        <div className="col-span-1 sm:col-span-2">
           <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-tighter flex items-center gap-1">
             <ShieldCheck className="h-3 w-3" /> SHA256 Integrity Hash
           </Label>
           <div className="flex gap-2">
-            <Input value={item.integrity} readOnly className="h-9 font-mono text-[10px] bg-muted/50 truncate" />
+            <Input value={item.integrity} readOnly className="h-9 font-mono text-[10px] bg-muted/50 truncate min-w-0" />
             <Button size="icon" variant="outline" className="h-9 w-9 shrink-0" onClick={generateIntegrity} disabled={isHashing}>
               <RefreshCw className={`h-3 w-3 ${isHashing ? 'animate-spin' : ''}`} />
             </Button>
@@ -159,21 +159,23 @@ export function PlaylistsPage() {
     return (
       <AppLayout container>
         <div className="max-w-4xl mx-auto space-y-6">
-          <div className="flex items-center justify-between border-b pb-6">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={() => setEditingPlaylist(null)} className="rounded-full"><ArrowLeft className="h-4 w-4" /></Button>
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight">{editingPlaylist.name}</h1>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 sm:pb-6 gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <Button variant="ghost" size="icon" onClick={() => setEditingPlaylist(null)} className="rounded-full shrink-0"><ArrowLeft className="h-4 w-4" /></Button>
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight truncate">{editingPlaylist.name}</h1>
                 <div className="text-xs text-muted-foreground flex items-center gap-2">
-                  <Badge variant="outline" className="text-[10px] font-mono">REVISION_{editingPlaylist.version}</Badge>
-                  Secure Manifest Revision Control
+                  <Badge variant="outline" className="text-[10px] font-mono shrink-0">REV_{editingPlaylist.version}</Badge>
+                  <span className="hidden sm:inline">Secure Manifest Revision Control</span>
                 </div>
               </div>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setShowRaw(!showRaw)}><Code className="h-4 w-4 mr-2"/> Raw</Button>
-              <Button onClick={() => publishMutation.mutate(editingPlaylist)} disabled={publishMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 shadow-primary">
-                <Save className="mr-2 h-4 w-4" /> Publish & Sign
+            <div className="flex items-center gap-2 shrink-0">
+              <Button variant="outline" size="sm" onClick={() => setShowRaw(!showRaw)} className="h-9">
+                <Code className="h-4 w-4 sm:mr-2"/> <span className="hidden sm:inline">Raw</span>
+              </Button>
+              <Button onClick={() => publishMutation.mutate(editingPlaylist)} disabled={publishMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 shadow-primary h-9 text-xs sm:text-sm">
+                <Save className="mr-1.5 sm:mr-2 h-4 w-4" /> Publish & Sign
               </Button>
             </div>
           </div>
@@ -204,10 +206,10 @@ export function PlaylistsPage() {
               </div>
             </SortableContext>
           </DndContext>
-          <Button variant="outline" className="w-full border-dashed border-2 py-12 bg-muted/10 hover:bg-muted/30 transition-all rounded-xl" onClick={() => {
+          <Button variant="outline" className="w-full border-dashed border-2 py-8 sm:py-12 bg-muted/10 hover:bg-muted/30 transition-all rounded-xl text-xs sm:text-sm font-bold" onClick={() => {
             setEditingPlaylist({ ...editingPlaylist, items: [...editingPlaylist.items, { id: crypto.randomUUID(), type: 'image', url: '', integrity: 'pending', durationMs: 10000 }] });
           }}>
-            <Plus className="mr-2 h-5 w-5 opacity-50" /> Insert New Content Layer
+            <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5 opacity-50" /> Insert New Content Layer
           </Button>
         </div>
       </AppLayout>
@@ -215,17 +217,17 @@ export function PlaylistsPage() {
   }
   return (
     <AppLayout container>
-      <div className="space-y-8">
-        <div className="flex items-center justify-between">
+      <div className="space-y-6 sm:space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-black tracking-tight text-foreground uppercase">Manifest Library</h1>
-            <p className="text-muted-foreground mt-1 text-lg font-medium">Author and sign deterministic content manifests.</p>
+            <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-foreground uppercase">Manifest Library</h1>
+            <p className="text-muted-foreground mt-1 text-sm sm:text-lg font-medium">Author and sign deterministic content manifests.</p>
           </div>
-          <Button className="bg-indigo-600 hover:bg-indigo-700 shadow-lg h-12 px-8 rounded-xl font-black uppercase text-[10px] tracking-widest" onClick={() => { setNewPlaylistOpen(true); setNewPlaylistName(''); }}>
-            <Plus className="mr-2 h-5 w-5" /> Initialize Manifest
+          <Button className="bg-indigo-600 hover:bg-indigo-700 shadow-lg h-10 sm:h-12 px-5 sm:px-8 rounded-xl font-black uppercase text-[10px] tracking-widest w-full sm:w-auto" onClick={() => { setNewPlaylistOpen(true); setNewPlaylistName(''); }}>
+            <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> Initialize Manifest
           </Button>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {playlists.map((playlist) => (
             <Card key={playlist.id} className="group hover:ring-2 hover:ring-indigo-500/50 transition-all duration-300 shadow-soft border-slate-200 overflow-hidden bg-card/50 backdrop-blur-sm">
               <CardHeader className="pb-3">
